@@ -5,10 +5,12 @@ import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
+    
     <Router>
-      <Routes>
+      <Routes>    
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/create" element={<LoginPage />} />
       </Routes>
     </Router>
   );
