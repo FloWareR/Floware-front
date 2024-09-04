@@ -1,57 +1,34 @@
-import React, { useState } from 'react'
-import { Search, Plus, MoreVertical } from 'lucide-react'
-import { useEffect } from 'react'
+import React, { useState } from 'react';
+import { Search, Plus, MoreVertical, RotateCcw } from 'lucide-react';
 
-const Products = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [products, setProducts] = useState([]); 
-  const [activeDropdown, setActiveDropdown] = useState(null)
+const Products = ({ products, fetchProducts }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch('http://localhost:80/floware/api/getproduct', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': localStorage.getItem('token')
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Error while fetching');
-      }
-
-      const data = await response.json();
-      setProducts(data);
-      console.log('Success:', data);
-    } catch (error) {
-      console.error('Fetch failed:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);  
-  
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
   const toggleDropdown = (id) => {
-    setActiveDropdown(activeDropdown === id ? null : id)
-  }
+    setActiveDropdown(activeDropdown === id ? null : id);
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-semibold text-gray-800">Products</h1>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
-          <Plus className="mr-2 h-4 w-4" /> Add Product
+    <div className="container mx-auto p-8 flex-1">
+      <div className="flex justify-between items-center ">
+      <h1 className="text-3xl font-semibold text-gray-700 mb-6">Products</h1>
+      <button
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center"
+          onClick={fetchProducts}>
+          <RotateCcw className="mr-2 h-4 w-4" /> Refresh Products
         </button>
+        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
+            <Plus className="mr-2 h-4 w-4" /> Add Product
+          </button>
       </div>
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
@@ -116,7 +93,7 @@ const Products = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;
