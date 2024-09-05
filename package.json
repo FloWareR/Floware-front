@@ -1,7 +1,6 @@
 {
   "name": "floware-front",
   "private": true,
-  "homepage": "http://localhost/dist/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
