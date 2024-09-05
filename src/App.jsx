@@ -8,7 +8,7 @@ import PrivateRoute from './utilities/PrivateRoute';
 
 function App() {
   return (
-    <Router>
+    <Router basename='Floware-front/'>
       <Routes>    
       <Route path="/" element={<PrivateRoute element={<HomePage />} />}/>        
       <Route path="/login" element={<LoginPage />} />
