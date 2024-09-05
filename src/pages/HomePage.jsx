@@ -21,6 +21,7 @@ export default function Component() {
       });
 
       if (!response.ok) {
+        if(response.status === 401) {localStorage.removeItem('token');}
         throw new Error('Error while fetching');
       }
 

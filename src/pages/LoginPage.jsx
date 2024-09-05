@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch('http://localhost:80/floware/api/login', {
@@ -20,11 +22,11 @@ const LoginPage = () => {
       return response.json();
     })
     .then(data => {
-      console.log('Login successful:', data);
+      console.log('Login successful');
       localStorage.setItem('token', data.token);
+      navigate('/');
     })
     .catch(error => {
-      showError(error.message);
       console.error('Login failed:', error);
     });
 

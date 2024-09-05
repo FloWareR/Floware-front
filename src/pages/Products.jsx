@@ -1,10 +1,52 @@
-import React, { useState } from 'react';
-import { Search, Plus, MoreVertical, RotateCcw } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react'; 
+import { Search, Plus, MoreVertical, RotateCcw, View } from 'lucide-react';
+import EditProductModal from '../components/EditProductModal'; 
+import ViewDetailsModal from '../components/ViewDetailsModal'; 
+
 
 const Products = ({ products, fetchProducts }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeDropdown, setActiveDropdown] = useState(null);
+const [searchTerm, setSearchTerm] = useState('');
+const [activeDropdown, setActiveDropdown] = useState(null);
+const [selectedProduct, setSelectedProduct] = useState(null);
+const [showEditModal, setShowEditModal] = useState(false);
+const [showViewDetailsModal, setShowViewDetailsModal] = useState(false);
 
+
+useEffect(() => {
+  if (activeDropdown !== null) {
+    document.addEventListener('mousedown', handleMouseClick);
+    return () => {
+      document.removeEventListener('mousedown', handleMouseClick);
+    };
+  }
+}, [activeDropdown]);
+
+
+const pushUpdateToAPI = (selectedProduct, editedProduct) => {
+  fetch(`http://localhost:80/floware/api/updateproduct?id=${selectedProduct.id}`, {
+    method: 'PATCH',
+    headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('token'),
+    },
+    body: JSON.stringify(editedProduct)
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Error updating');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Update successful:', data);
+    fetchProducts();
+  })
+  .catch(error => {
+    if(error.status === 401) {localStorage.removeItem('token');}
+    console.error('Error failed:', error);
+  });
+
+  };
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -13,8 +55,30 @@ const Products = ({ products, fetchProducts }) => {
     setSearchTerm(e.target.value);
   };
 
+  const handleMouseClick = (e) => {
+    if (!e.target.closest('.absolute') || !e.target.closest('.relative')) {
+      setActiveDropdown(null);
+    }
+  };
+
   const toggleDropdown = (id) => {
     setActiveDropdown(activeDropdown === id ? null : id);
+  };
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setShowEditModal(true);
+  };
+
+  const handleViewDetails = (product) => {
+    setSelectedProduct(product);
+    setShowViewDetailsModal(true);
+  };
+
+  const handleSave = (editedProduct) => {
+    console.log('Saving edited product:', editedProduct);
+    console.log(selectedProduct.id)
+    pushUpdateToAPI(selectedProduct, editedProduct);
   };
 
   return (
@@ -52,7 +116,7 @@ const Products = ({ products, fetchProducts }) => {
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">quantity</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -73,13 +137,13 @@ const Products = ({ products, fetchProducts }) => {
                         className="text-gray-400 hover:text-gray-600"
                         aria-label="More options"
                       >
-                        <MoreVertical className="h-5 w-5" />
+                        <MoreVertical className="h-5 w-5 " />
                       </button>
                       {activeDropdown === product.id && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                           <div className="py-1">
-                            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</button>
-                            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</button>
+                            <button onClick={() => handleEdit(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</button>
+                            <button onClick={() => handleViewDetails(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</button>
                             <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
                           </div>
                         </div>
@@ -92,7 +156,21 @@ const Products = ({ products, fetchProducts }) => {
           </table>
         </div>
       </div>
+      <EditProductModal 
+          show={showEditModal}
+          product={selectedProduct}
+          onClose={() => setShowEditModal(false)}
+          onSave={handleSave}
+      />
+      <ViewDetailsModal 
+          show={showViewDetailsModal}
+          product={selectedProduct}
+          onClose={() => setShowViewDetailsModal(false)}
+          onSave={handleSave}
+      />
+
     </div>
+
   );
 };
 
