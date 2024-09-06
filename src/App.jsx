@@ -8,7 +8,7 @@ import PrivateRoute from './utilities/PrivateRoute';
 
 function App() {
   // const url = 'floware.studio/api';
-  const url = 'http://localhost/api';
+  const url = 'http://localhost/floware/api';
   return (
     <Router basename='/'>
       <Routes>    

@@ -13,7 +13,7 @@ export default function Component(url) {
   const navigate = useNavigate();
 
   const URI = url.url + '/getproduct';
-
+  console.log(URI)
   const fetchProducts = async () => {
     setLoading(true); 
     try {
@@ -59,7 +59,7 @@ export default function Component(url) {
       case 'dashboard':
         return <Dashboard products={products}/>;
       case 'products':
-        return <Products products={products} fetchProducts={fetchProducts} isProduction= {isProduction} />;
+        return <Products products={products} fetchProducts={fetchProducts} url= {url} />;
       case 'orders':
         return <Dashboard products={products}/>;
       case 'customers':
