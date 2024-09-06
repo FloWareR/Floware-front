@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = (url) => {
+const LoginPage = ({API_URL}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   
-  const URI = url.url + '/login';
-
+  const URI = API_URL + '/login';
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch(URI, {

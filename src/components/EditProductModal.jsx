@@ -16,7 +16,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
 
   const handleSave = () => {
 
-    if(!editedProduct.name && !editedProduct.sku && !editedProduct.price && !editedProduct.quantity) {
+    if(!editedProduct.name && !editedProduct.barcode && !editedProduct.description && !editedProduct.sku && !editedProduct.quantity && !editedProduct.price && !editedProduct.cost) {
       toast.error('No changes were made!', {
         position: "top-right",
         autoClose: 4000,
@@ -58,7 +58,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
               
               type="text"
               name="name"
-              value={product.name}
+              placeholder={product.name}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -69,7 +69,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="text"
               name="barcode"
-              value={product.barcode}
+              placeholder={product.barcode}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -80,7 +80,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="text"
               name="description"
-              value={product.description}
+              placeholder={product.description}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -91,7 +91,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="text"
               name="sku"
-              value={product.sku}
+              placeholder={product.sku}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -101,7 +101,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="number"
               name="quantity"
-              value={product.quantity}
+              placeholder={product.quantity}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -112,7 +112,7 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="number"
               name="price"
-              value={product.price}
+              placeholder={product.price}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
@@ -124,15 +124,17 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
             <input
               type="number"
               name="cost"
-              value={product.cost}
+              placeholder={product.cost}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
             />
           </div>
 
         </div>
-
-        <button onClick={onClose} className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 mr-2 rounded">
+          Update
+        </button>
+        <button onClick={onClose} className="bg-red-600 text-white  px-5 py-2 rounded">
           Close
         </button>
       </div>

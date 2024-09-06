@@ -6,14 +6,13 @@ import { Audio } from 'react-loader-spinner';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function Component(url) {
+export default function Component({API_URL}) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const URI = url.url + '/getproduct';
-  console.log(URI)
+  const URI = API_URL + '/getproduct';
   const fetchProducts = async () => {
     setLoading(true); 
     try {
@@ -42,7 +41,7 @@ export default function Component(url) {
   };
 
   useEffect(() => {
-    if (products === null) {
+    if (products.length === 0) {
       fetchProducts();
     }
   }, []); 
@@ -59,7 +58,7 @@ export default function Component(url) {
       case 'dashboard':
         return <Dashboard products={products}/>;
       case 'products':
-        return <Products products={products} fetchProducts={fetchProducts} url= {url} />;
+        return <Products products={products} fetchProducts={fetchProducts} API_URL= {API_URL} />;
       case 'orders':
         return <Dashboard products={products}/>;
       case 'customers':

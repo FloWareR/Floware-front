@@ -6,16 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const Products = ({ products, fetchProducts, url }) => {
+const Products = ({ products, fetchProducts, API_URL }) => {
 const [searchTerm, setSearchTerm] = useState('');
 const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
 const navigate = useNavigate();
 
-const URI = url.url + '/updateproduct';
-console.log(URI);
-useEffect(() => {
+const URI = API_URL + '/updateproduct';
+useEffect(() => { 
   if (activeDropdown !== null) {
     document.addEventListener('mousedown', handleMouseClick);
     return () => {
@@ -24,7 +23,7 @@ useEffect(() => {
   }
 }, [activeDropdown]);
 
-
+console.log(URI)
 const pushUpdateToAPI = (selectedProduct, editedProduct) => {
   fetch(`${URI}?id=${selectedProduct.id}`, {
     method: 'PATCH',
@@ -113,7 +112,7 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
             Filter
           </button>
         </div>
-        <div className="overflow-x-auto">
+        <div className=" relative">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
