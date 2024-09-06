@@ -3,16 +3,21 @@ import Dashboard from './Dashboard';
 import SideBar from './SideBar';
 import Products from './Products';
 import { Audio } from 'react-loader-spinner';
+import { useNavigate } from 'react-router-dom';
 
-export default function Component() {
+
+export default function Component(url) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const URI = url.url + '/getproduct';
 
   const fetchProducts = async () => {
     setLoading(true); 
     try {
-      const response = await fetch('http://localhost:80/floware/api/getproduct', {
+      const response = await fetch(URI, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -21,8 +26,10 @@ export default function Component() {
       });
 
       if (!response.ok) {
-        if(response.status === 401) {localStorage.removeItem('token');}
-        throw new Error('Error while fetching');
+        if(error.status === 401) {
+          localStorage.removeItem('token')           
+          navigate('/login');              
+          ;}        throw new Error('Error while fetching');
       }
 
       const data = await response.json();
@@ -52,7 +59,7 @@ export default function Component() {
       case 'dashboard':
         return <Dashboard products={products}/>;
       case 'products':
-        return <Products products={products} fetchProducts={fetchProducts} />;
+        return <Products products={products} fetchProducts={fetchProducts} isProduction= {isProduction} />;
       case 'orders':
         return <Dashboard products={products}/>;
       case 'customers':

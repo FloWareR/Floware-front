@@ -7,11 +7,13 @@ import LoginPage from './pages/LoginPage';
 import PrivateRoute from './utilities/PrivateRoute';
 
 function App() {
+  // const url = 'floware.studio/api';
+  const url = 'http://localhost/api';
   return (
-    <Router basename='Floware-front/'>
+    <Router basename='/'>
       <Routes>    
-      <Route path="/" element={<PrivateRoute element={<HomePage />} />}/>        
-      <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage url= {url} />} />
+        <Route path="/" element={<PrivateRoute element={<HomePage url= {url} />} />}/>        
       </Routes>
       <ToastContainer />
     </Router>

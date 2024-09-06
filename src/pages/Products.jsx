@@ -2,16 +2,21 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Plus, MoreVertical, RotateCcw, View } from 'lucide-react';
 import EditProductModal from '../components/EditProductModal'; 
 import ViewDetailsModal from '../components/ViewDetailsModal'; 
+import { useNavigate } from 'react-router-dom';
 
 
-const Products = ({ products, fetchProducts }) => {
+
+
+const Products = ({ products, fetchProducts, url }) => {
 const [searchTerm, setSearchTerm] = useState('');
 const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
 const [showViewDetailsModal, setShowViewDetailsModal] = useState(false);
+const navigate = useNavigate();
 
-
+const URI = url.url + '/updateproduct';
+console.log(URI);
 useEffect(() => {
   if (activeDropdown !== null) {
     document.addEventListener('mousedown', handleMouseClick);
@@ -23,7 +28,7 @@ useEffect(() => {
 
 
 const pushUpdateToAPI = (selectedProduct, editedProduct) => {
-  fetch(`http://localhost:80/floware/api/updateproduct?id=${selectedProduct.id}`, {
+  fetch(`${URI}?id=${selectedProduct.id}`, {
     method: 'PATCH',
     headers: {
         'Content-Type': 'application/json',
@@ -42,7 +47,10 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
     fetchProducts();
   })
   .catch(error => {
-    if(error.status === 401) {localStorage.removeItem('token');}
+    if(error.status === 401) {
+      localStorage.removeItem('token')           
+      navigate('/login');              
+      ;}
     console.error('Error failed:', error);
   });
 

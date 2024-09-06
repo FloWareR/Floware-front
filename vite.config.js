@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   
-  base: '/Floware-front/',
+  base: './',
   build: {
     outDir: 'dist', 
     emptyOutDir: true, 
