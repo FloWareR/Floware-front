@@ -37,59 +37,103 @@ const EditProductModal = ({ show, product, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-        <h2 className="text-xl font-semibold mb-4">Edit Product</h2>
+        <h2 className="text-xl font-semibold mb-4">View details & edit</h2>
 
-        <label className="block mb-2">Name</label>
-        <input
-          type="text"
-          name="name"
-          value={editedProduct.name}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 mb-4 border border-gray-400 outline-none focus:ring focus:ring-blue-600 rounded-md"
-        />
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block mb-2">ID</label>
+            <input
+              disabled
+              type="number"
+              name="id"
+              value={product.id}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-300 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
 
-        <label className="block mb-2">Description</label>
-        <input
-          type="text"
-          name="description"
-          value={editedProduct.description}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 mb-4 border border-gray-400 outline-none focus:ring focus:ring-blue-600 rounded-md"
-        />
+          <div>
+            <label className="block mb-2">Name</label>
+            <input
+              
+              type="text"
+              name="name"
+              value={product.name}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
 
-        <label className="block mb-2">SKU</label>
-        <input
-          type="text"
-          name="sku"
-          value={editedProduct.sku}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 mb-4 border border-gray-400 outline-none focus:ring focus:ring-blue-600 rounded-md"
-          />
+          <div>
+            <label className="block mb-2">Barcode</label>
+            <input
+              type="text"
+              name="barcode"
+              value={product.barcode}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
 
-        <label className="block mb-2">Price</label>
-        <input
-          type="number"
-          name="price"
-          value={editedProduct.price}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 mb-4 border border-gray-400 outline-none focus:ring focus:ring-blue-600 rounded-md"
-        />
-        
-        <label className="block mb-2">Quantity</label>
-        <input
-          type="number"
-          name="quantity"
-          value={editedProduct.quantity}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 mb-4 border border-gray-400 outline-none focus:ring focus:ring-blue-600 rounded-md"
-        />
+          <div>
+            <label className="block mb-2">Description</label>
+            <input
+              type="text"
+              name="description"
+              value={product.description}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">SKU</label>
+            <input
+              type="text"
+              name="sku"
+              value={product.sku}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
+          <div>
+            <label className="block mb-2">Quantity</label>
+            <input
+              type="number"
+              name="quantity"
+              value={product.quantity}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-2">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={product.price}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
 
 
-        <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded mr-2">
-          Save
-        </button>
-        <button onClick={onClose} className="bg-gray-300 text-gray-700 px-4 py-2 rounded">
-          Cancel
+          <div>
+            <label className="block mb-2">Cost</label>
+            <input
+              type="number"
+              name="cost"
+              value={product.cost}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+            />
+          </div>
+
+        </div>
+
+        <button onClick={onClose} className="bg-blue-500 text-white px-4 py-2 rounded">
+          Close
         </button>
       </div>
     </div>

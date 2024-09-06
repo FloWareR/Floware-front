@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'; 
 import { Search, Plus, MoreVertical, RotateCcw, View } from 'lucide-react';
 import EditProductModal from '../components/EditProductModal'; 
-import ViewDetailsModal from '../components/ViewDetailsModal'; 
 import { useNavigate } from 'react-router-dom';
 
 
@@ -12,7 +11,6 @@ const [searchTerm, setSearchTerm] = useState('');
 const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
-const [showViewDetailsModal, setShowViewDetailsModal] = useState(false);
 const navigate = useNavigate();
 
 const URI = url.url + '/updateproduct';
@@ -78,10 +76,7 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
     setShowEditModal(true);
   };
 
-  const handleViewDetails = (product) => {
-    setSelectedProduct(product);
-    setShowViewDetailsModal(true);
-  };
+
 
   const handleSave = (editedProduct) => {
     console.log('Saving edited product:', editedProduct);
@@ -150,8 +145,7 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
                       {activeDropdown === product.id && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                           <div className="py-1">
-                            <button onClick={() => handleEdit(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</button>
-                            <button onClick={() => handleViewDetails(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</button>
+                            <button onClick={() => handleEdit(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">More</button>
                             <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
                           </div>
                         </div>
@@ -170,13 +164,6 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
           onClose={() => setShowEditModal(false)}
           onSave={handleSave}
       />
-      <ViewDetailsModal 
-          show={showViewDetailsModal}
-          product={selectedProduct}
-          onClose={() => setShowViewDetailsModal(false)}
-          onSave={handleSave}
-      />
-
     </div>
 
   );

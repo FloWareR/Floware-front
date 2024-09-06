@@ -42,7 +42,7 @@ export default function Component(url) {
   };
 
   useEffect(() => {
-    if (products.length === 0) {
+    if (products === null) {
       fetchProducts();
     }
   }, []); 
