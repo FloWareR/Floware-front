@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'; 
-import { Search, Plus, MoreVertical, RotateCcw, View } from 'lucide-react';
+import { Search, Plus, MoreVertical, RotateCcw, View, Delete } from 'lucide-react';
 import EditProductModal from '../components/EditProductModal'; 
+import DeleteConfirmationModal from '../components/DeleteProductModal';
 import { useNavigate } from 'react-router-dom';
-
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Products = ({ products, fetchProducts, API_URL }) => {
@@ -11,9 +12,10 @@ const [searchTerm, setSearchTerm] = useState('');
 const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
+const [showDeletetModal, setShowDeletetModal] = useState(false);
+
 const navigate = useNavigate();
 
-const URI = API_URL + '/updateproduct';
 useEffect(() => { 
   if (activeDropdown !== null) {
     document.addEventListener('mousedown', handleMouseClick);
@@ -23,8 +25,8 @@ useEffect(() => {
   }
 }, [activeDropdown]);
 
-console.log(URI)
-const pushUpdateToAPI = (selectedProduct, editedProduct) => {
+  const pushUpdateToAPI = (selectedProduct, editedProduct) => {
+  const URI = API_URL + '/updateproduct';
   fetch(`${URI}?id=${selectedProduct.id}`, {
     method: 'PATCH',
     headers: {
@@ -52,6 +54,44 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
   });
 
   };
+
+  const pushDeleteToAPI = (deletedProduct) => {
+    const URI = API_URL + '/deleteproduct';
+    fetch(`${URI}?id=${deletedProduct.id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Error updating');
+      }
+      return response.json();
+    })
+    .then(data => {
+      toast.error('Delete successful!', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+      fetchProducts();
+      return;     
+    })
+    .catch(error => {
+      if(error.status === 401) {
+        localStorage.removeItem('token')           
+        navigate('/login');              
+        ;}
+      console.error('Error failed:', error);
+    });
+  };
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -73,15 +113,23 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setShowEditModal(true);
+    console.log(showDeletetModal)
+  };
+
+  const handleDelete = (product) => {
+    setSelectedProduct(product);
+    setShowDeletetModal(true);
   };
 
 
 
   const handleSave = (editedProduct) => {
-    console.log('Saving edited product:', editedProduct);
-    console.log(selectedProduct.id)
     pushUpdateToAPI(selectedProduct, editedProduct);
   };
+
+  const handleDeleteSave = ( ) => {
+    pushDeleteToAPI(selectedProduct);
+  }
 
   return (
     <div className="container mx-auto p-8 flex-1">
@@ -145,7 +193,7 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                           <div className="py-1">
                             <button onClick={() => handleEdit(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">More</button>
-                            <button className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
+                            <button onClick={()=> handleDelete(product)} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
                           </div>
                         </div>
                       )}
@@ -162,6 +210,12 @@ const pushUpdateToAPI = (selectedProduct, editedProduct) => {
           product={selectedProduct}
           onClose={() => setShowEditModal(false)}
           onSave={handleSave}
+      />
+      <DeleteConfirmationModal
+          show={showDeletetModal}
+          product={selectedProduct}
+          onClose={() => setShowDeletetModal(false)}
+          onConfirm={handleDeleteSave}
       />
     </div>
 

@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const LoginPage = ({API_URL}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('')
   const navigate = useNavigate();
   
   const URI = API_URL + '/login';
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError(''); 
     fetch(URI, {
       method: 'POST',
       headers: {
@@ -29,6 +32,7 @@ const LoginPage = ({API_URL}) => {
     })
     .catch(error => {
       console.error('Login failed:', error);
+      setError('Login failed. Please check your username and password.');
     });
 
   };
@@ -36,7 +40,7 @@ const LoginPage = ({API_URL}) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-800">
       <div className="bg-gray-200 p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-6">Login</h1>
+        <h1 className="text-2xl font-bold mb-6">Floware account</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">username</label>
@@ -69,6 +73,12 @@ const LoginPage = ({API_URL}) => {
             Sign In
           </button>
         </form>
+        {error && (
+          <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong className="font-bold">Error: </strong>
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
       </div>
     </div>
   );

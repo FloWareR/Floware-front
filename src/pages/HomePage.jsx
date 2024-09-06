@@ -6,16 +6,22 @@ import { Audio } from 'react-loader-spinner';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function Component({API_URL}) {
+export default function Component({API_URL}) { 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  
+
+
+
+
 
   const URI = API_URL + '/getproduct';
   const fetchProducts = async () => {
     setLoading(true); 
     try {
+      console.log(URI)
       const response = await fetch(URI, {
         method: 'GET',
         headers: {
@@ -25,10 +31,11 @@ export default function Component({API_URL}) {
       });
 
       if (!response.ok) {
-        if(error.status === 401) {
-          localStorage.removeItem('token')           
+        if(response.status === 401) {
+          localStorage.removeItem('token')      
           navigate('/login');              
-          ;}        throw new Error('Error while fetching');
+          ;}       
+           throw new Error('Error while fetching');
       }
 
       const data = await response.json();

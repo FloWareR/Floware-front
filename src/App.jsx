@@ -12,7 +12,7 @@ function App() {
   : 'https://floware.studio/api'; // Production server
   
   return (
-    <Router basename='/'>
+    <Router basename='/app'>
       <Routes>    
         <Route path="/login" element={<LoginPage API_URL= {API_URL} />} />
         <Route path="/" element={<PrivateRoute element={<HomePage API_URL= {API_URL} />} />}/>        
