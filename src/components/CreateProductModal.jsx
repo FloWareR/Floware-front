@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const CreateProductModal = ({ show, onClose, onSave }) => {
   const [newProduct, setNewProduct] = useState('');
+  const [fillError, setFillError] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,8 +27,10 @@ const CreateProductModal = ({ show, onClose, onSave }) => {
         draggable: true,
         progress: undefined,
       });
+      setFillError(true);
       return;     
     }
+    setFillError(false);
     onSave(newProduct);
     onClose(); 
   };
@@ -47,7 +50,9 @@ const CreateProductModal = ({ show, onClose, onSave }) => {
               type="text"
               name="name"
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
+              className={`w-full px-4 py-2 border focus:ring-blue-600 outline-none focus:ring rounded-md 
+                ${fillError ? 'border-red-700' : 'border-gray-500'}`}
+
             />
           </div>
 
@@ -69,8 +74,8 @@ const CreateProductModal = ({ show, onClose, onSave }) => {
               type="text"
               name="description"
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
-            />
+              className={`w-full px-4 py-2 border focus:ring-blue-600 outline-none focus:ring rounded-md 
+                ${fillError ? 'border-red-700' : 'border-gray-500'}`}            />
           </div>
 
           <div>
@@ -90,8 +95,8 @@ const CreateProductModal = ({ show, onClose, onSave }) => {
               type="number"
               name="quantity"
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
-            />
+              className={`w-full px-4 py-2 border focus:ring-blue-600 outline-none focus:ring rounded-md 
+                ${fillError ? 'border-red-700' : 'border-gray-500'}`}            />
           </div>
 
           <div>
@@ -101,8 +106,8 @@ const CreateProductModal = ({ show, onClose, onSave }) => {
               type="number"
               name="price"
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-500 outline-none focus:ring focus:ring-blue-600 rounded-md"
-            />
+              className={`w-full px-4 py-2 border focus:ring-blue-600 outline-none focus:ring rounded-md 
+                ${fillError ? 'border-red-700' : 'border-gray-500'}`}            />
           </div>
 
 

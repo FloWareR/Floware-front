@@ -125,7 +125,8 @@ useEffect(() => {
   }
 
   const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleSearchChange = (e) => {
@@ -189,14 +190,14 @@ useEffect(() => {
             <input
               type="text"
               placeholder="Search products"
-              className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-4 py-2 border-gray-300 border-2	 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={handleSearchChange}
             />
           </div>
-          <button className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded">
+          {/* <button className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded">
             Filter
-          </button>
+          </button> */}
         </div>
         <div className=" relative">
           <table className="min-w-full divide-y divide-gray-200">
