@@ -1,10 +1,11 @@
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useRef, useEffect } from 'react'; 
 import { Search, Plus, MoreVertical, RotateCcw, View, Delete } from 'lucide-react';
-import EditProductModal from '../components/EditProductModal'; 
-import DeleteConfirmationModal from '../components/DeleteProductModal';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import EditProductModal from '../components/EditProductModal'; 
+import DeleteConfirmationModal from '../components/DeleteProductModal';
+import CreateProductModal from '../components/CreateProductModal';
 
 
 const Products = ({ products, fetchProducts, API_URL }) => {
@@ -13,6 +14,8 @@ const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
 const [showDeletetModal, setShowDeletetModal] = useState(false);
+const [showAddModal, setShowAddModal] = useState(false);
+
 
 const navigate = useNavigate();
 
@@ -92,6 +95,35 @@ useEffect(() => {
     });
   };
 
+  const pushAddToAPI = (newProduct) => {
+    const URI = API_URL + '/addproduct';
+    fetch(URI, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'token': localStorage.getItem('token'),
+    },
+    body: JSON.stringify(newProduct)
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Error adding');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('add successful:', data);
+    fetchProducts();
+  })
+  .catch(error => {
+    if(error.status === 401) {
+      localStorage.removeItem('token')           
+      navigate('/login');              
+      ;}
+    console.error('Error failed:', error);
+  });
+  }
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -121,7 +153,9 @@ useEffect(() => {
     setShowDeletetModal(true);
   };
 
-
+  const handleCreate = () => {
+    setShowAddModal(true);
+  }
 
   const handleSave = (editedProduct) => {
     pushUpdateToAPI(selectedProduct, editedProduct);
@@ -129,6 +163,10 @@ useEffect(() => {
 
   const handleDeleteSave = ( ) => {
     pushDeleteToAPI(selectedProduct);
+  }
+
+  const handleAddSave = (newProduct) => {
+    pushAddToAPI(newProduct);
   }
 
   return (
@@ -140,7 +178,7 @@ useEffect(() => {
           onClick={fetchProducts}>
           <RotateCcw className="mr-2 h-4 w-4" /> Refresh Products
         </button>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
+        <button onClick={() => handleCreate()} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
             <Plus className="mr-2 h-4 w-4" /> Add Product
           </button>
       </div>
@@ -216,6 +254,12 @@ useEffect(() => {
           product={selectedProduct}
           onClose={() => setShowDeletetModal(false)}
           onConfirm={handleDeleteSave}
+      />
+      <CreateProductModal
+          show={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onSave={handleAddSave}
+
       />
     </div>
 

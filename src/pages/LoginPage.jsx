@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -7,7 +7,14 @@ const LoginPage = ({API_URL}) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('')
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/');
+    }
+  }, []);
+
+
   const URI = API_URL + '/login';
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +35,7 @@ const LoginPage = ({API_URL}) => {
     .then(data => {
       console.log('Login successful');
       localStorage.setItem('token', data.token);
-      navigate('/');
+      navigate('/', { replace: true });
     })
     .catch(error => {
       console.error('Login failed:', error);

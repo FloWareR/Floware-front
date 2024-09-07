@@ -30,11 +30,11 @@ const SideBar = ({ activeTab, setActiveTab }) => {
           <a
             key={item.tab}
             className={`flex items-center px-4 py-2 m-3 ${
-              item.last ? 'mt-auto' : ''
+              item.last ? 'mt-auto ' : ''
             } ${
               activeTab === item.tab
-                ? 'bg-blue-600 text-white rounded-lg'
-                : 'text-gray-700 rounded-lg hover:bg-blue-200 hover:text-gray-800 hover:outline hover:outline-2 hover:outline-blue-600 hover:outline-offset-[-2px]'
+                ? 'bg-blue-600 cursor-pointer text-white rounded-lg'
+                : 'text-gray-700  cursor-pointer rounded-lg hover:bg-blue-200 hover:text-gray-800 hover:outline hover:outline-2 hover:outline-blue-600 hover:outline-offset-[-2px]'
             }`}
 
             onClick={item.tab === 'logout' ? handleLogout : () => setActiveTab(item.tab)}
