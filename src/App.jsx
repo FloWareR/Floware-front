@@ -12,6 +12,7 @@ function App() {
   : 'https://floware.studio/api'; // Production server
   
   return (
+    <>
     <Router basename='/'>
       <Routes>    
         <Route path="/login" element={<LoginPage API_URL= {API_URL} />} />
@@ -19,6 +20,7 @@ function App() {
       </Routes>
       <ToastContainer />
     </Router>
+    </>
   );
 }
 
