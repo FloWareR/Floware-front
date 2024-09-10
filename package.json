@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "vite build && copy B:\\React\\FlowareInventory-front\\.htaccess dist\\ && copy B:\\React\\FlowareInventory-front\\.gitinclude dist\\&& gh-pages -d dist"
+    "deploy": "vite build -d dist"
 
   },
   "dependencies": {

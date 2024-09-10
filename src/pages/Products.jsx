@@ -53,8 +53,17 @@ useEffect(() => {
       localStorage.removeItem('token')           
       navigate('/login');              
       ;}
-    console.error('Error failed:', error);
-  });
+      toast.warning('Manager access required', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+      }
+  );
 
   };
 
@@ -74,7 +83,7 @@ useEffect(() => {
       return response.json();
     })
     .then(data => {
-      toast.error('Delete successful!', {
+      toast.warning('Delete successful!', {
         position: "top-right",
         autoClose: 4000,
         hideProgressBar: false,
@@ -91,7 +100,15 @@ useEffect(() => {
         localStorage.removeItem('token')           
         navigate('/login');              
         ;}
-      console.error('Error failed:', error);
+        toast.warning('Manager access required', {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+        });
     });
   };
 
@@ -120,7 +137,15 @@ useEffect(() => {
       localStorage.removeItem('token')           
       navigate('/login');              
       ;}
-    console.error('Error failed:', error);
+      toast.warning('Manager access required', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
   });
   }
 
