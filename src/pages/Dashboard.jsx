@@ -1,7 +1,7 @@
 import { Package, DollarSign, ShoppingCart, Users, Boxes, AlertTriangle, TrendingUp } from 'lucide-react'
 
 
-const Dashboard = ({products}) => {
+const Dashboard = ({products, customers}) => {
 
   const lowStockAlert = products.filter(product => product.quantity < 10).length;
 
@@ -13,7 +13,7 @@ const Dashboard = ({products}) => {
             { title: 'Total Products', value: products.length, icon: Boxes, color: 'text-blue-500' },
             { title: 'Total Orders', value: '0', icon: ShoppingCart, color: 'text-green-500' },
             { title: 'Revenue', value: '0', icon: DollarSign, color: 'text-yellow-500' },
-            { title: 'Customers', value: '0', icon: Users, color: 'text-purple-500' },
+            { title: 'Customers', value: customers.length, icon: Users, color: 'text-purple-500' },
           ].map((item, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center justify-between mb-4">
