@@ -45,10 +45,8 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
     }
 
     if (mode === 'edit') {
-<<<<<<< HEAD
-=======
+
       // Edit mode logic, check for changes
->>>>>>> 543bcef277a1d69fdfc6b43c15fce4bb05658c7e
       const hasChanges = Object.keys(formData).some(
         key => formData[key] !== initialData[key]
       );
