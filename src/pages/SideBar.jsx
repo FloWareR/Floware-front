@@ -23,8 +23,8 @@ const SideBar = ({ activeTab, setActiveTab }) => {
         {[
           { name: 'Dashboard', icon: Package, tab: 'dashboard' },
           { name: 'Products', icon: Boxes, tab: 'products' },
-          { name: 'Orders', icon: ShoppingCart, tab: 'orders' },
           { name: 'Customers', icon: Users, tab: 'customers' },
+          { name: 'Orders', icon: ShoppingCart, tab: 'orders' },
           { name: 'Logout', icon: LogOut, tab: 'logout', last: true },
         ].map((item) => (
           <a
