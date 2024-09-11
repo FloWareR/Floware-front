@@ -45,6 +45,10 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
     }
 
     if (mode === 'edit') {
+<<<<<<< HEAD
+=======
+      // Edit mode logic, check for changes
+>>>>>>> 543bcef277a1d69fdfc6b43c15fce4bb05658c7e
       const hasChanges = Object.keys(formData).some(
         key => formData[key] !== initialData[key]
       );
@@ -74,6 +78,7 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
           {fields.map((field, index) => (
             <div key={index}>
               <label className="block mb-2">{field.label}</label>
+<<<<<<< HEAD
               {field.options ? (
                 <select
                   value={formData[field.name] || ''}
@@ -101,6 +106,17 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
                   } outline-none focus:ring focus:ring-blue-600 rounded-md`}
                 />
               )}
+=======
+              <input
+                value={formData[field.name] || ''}
+                type={field.type || 'text'}
+                name={field.name}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-2 border ${
+                  errors[field.name] ? 'border-red-700' : 'border-gray-500'
+                } outline-none focus:ring focus:ring-blue-600 rounded-md`}
+              />
+>>>>>>> 543bcef277a1d69fdfc6b43c15fce4bb05658c7e
             </div>
           ))}
         </div>
