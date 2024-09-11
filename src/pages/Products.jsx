@@ -1,16 +1,14 @@
 import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useRef, useEffect } from 'react'; 
-import { Search, Plus, MoreVertical, RotateCcw, View, Delete } from 'lucide-react';
+import { Search, Plus, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import EditProductModal from '../components/EditProductModal'; 
-import DeleteConfirmationModal from '../components/DeleteProductModal';
-import CreateProductModal from '../components/CreateProductModal';
-
+import DeleteConfirmationModal from '../views/DeleteModal';
+import FormModal from '../views/FormModal';
+import Table from '../components/Table';
 
 const Products = ({ products, fetchProducts, API_URL }) => {
 const [searchTerm, setSearchTerm] = useState('');
-const [activeDropdown, setActiveDropdown] = useState(null);
 const [selectedProduct, setSelectedProduct] = useState(null);
 const [showEditModal, setShowEditModal] = useState(false);
 const [showDeletetModal, setShowDeletetModal] = useState(false);
@@ -18,25 +16,16 @@ const [showAddModal, setShowAddModal] = useState(false);
 
 
 const navigate = useNavigate();
-
-useEffect(() => { 
-  if (activeDropdown !== null) {
-    document.addEventListener('mousedown', handleMouseClick);
-    return () => {
-      document.removeEventListener('mousedown', handleMouseClick);
-    };
-  }
-}, [activeDropdown]);
-
-  const pushUpdateToAPI = (selectedProduct, editedProduct) => {
+//Fetch to API
+  const pushUpdateToAPI = (formData) => {
   const URI = API_URL + '/updateproduct';
-  fetch(`${URI}?id=${selectedProduct.id}`, {
+  fetch(`${URI}?id=${formData.id}`, {
     method: 'PATCH',
     headers: {
         'Content-Type': 'application/json',
         'token': localStorage.getItem('token'),
     },
-    body: JSON.stringify(editedProduct)
+    body: JSON.stringify(formData)
   })
   .then(response => {
     if (!response.ok) {
@@ -149,51 +138,83 @@ useEffect(() => {
   });
   }
 
+// Filter products
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (product.sku && product.sku.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+//Misc functions
+  const handleRowAction = (row, actionType) => {
+    if (actionType === 'edit') {
+      handleEdit(row);
+    } else if (actionType === 'delete') {
+      handleDelete(row);
+    } else if (actionType === 'delete') {
+      handleDetails(row);
+    }
+    
+  };
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleMouseClick = (e) => {
-    if (!e.target.closest('.absolute') || !e.target.closest('.relative')) {
-      setActiveDropdown(null);
-    }
-  };
-
-  const toggleDropdown = (id) => {
-    setActiveDropdown(activeDropdown === id ? null : id);
-  };
-
-  const handleEdit = (product) => {
-    setSelectedProduct(product);
-    setShowEditModal(true);
-    console.log(showDeletetModal)
-  };
-
+// Delete product
   const handleDelete = (product) => {
     setSelectedProduct(product);
     setShowDeletetModal(true);
   };
 
-  const handleCreate = () => {
+  const handleDeleteSave = ( ) => {
+    pushDeleteToAPI(selectedProduct);
+  };
+
+// Edit product
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setShowEditModal(true);
+  };
+
+  const handleEditSave = (formData) => {
+    pushUpdateToAPI(formData);
+  }
+
+  const handleEditClose = () => {
+    setShowEditModal(false);
+  }
+
+// Add product
+  const handleAdd = () => {
     setShowAddModal(true);
   }
 
-  const handleSave = (editedProduct) => {
-    pushUpdateToAPI(selectedProduct, editedProduct);
-  };
-
-  const handleDeleteSave = ( ) => {
-    pushDeleteToAPI(selectedProduct);
+  const handleAddSave = (formData) => {
+    pushAddToAPI(formData);
   }
 
-  const handleAddSave = (newProduct) => {
-    pushAddToAPI(newProduct);
+  const handleAddClose = () => {
+    setShowAddModal(false);
   }
+
+  //Fields for table  & forms
+  const columns = [
+    { Header: 'Name', accessor: 'name' },
+    { Header: 'SKU', accessor: 'sku' },
+    { Header: 'Description', accessor: 'description' },
+    { Header: 'Price', accessor: 'price' },
+    { Header: 'Quantity', accessor: 'quantity' },
+  ];
+  
+  const productFields = [
+    { name: 'name', label: 'Name', required: true },
+    { name: 'barcode', label: 'Barcode' },
+    { name: 'description', label: 'Description', required: true },
+    { name: 'sku', label: 'SKU' },
+    { name: 'quantity', label: 'Quantity', type: 'number', required: true },
+    { name: 'price', label: 'Price', type: 'number', required: true },
+    { name: 'cost', label: 'Cost', type: 'number' },
+  ];
 
   return (
     <div className="container mx-auto p-8 flex-1">
@@ -204,7 +225,7 @@ useEffect(() => {
           onClick={fetchProducts}>
           <RotateCcw className="mr-2 h-4 w-4" /> Refresh Products
         </button>
-        <button onClick={() => handleCreate()} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
+        <button onClick={() => handleAdd()} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center">
             <Plus className="mr-2 h-4 w-4" /> Add Product
           </button>
       </div>
@@ -220,72 +241,41 @@ useEffect(() => {
               onChange={handleSearchChange}
             />
           </div>
-          {/* <button className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded">
-            Filter
-          </button> */}
         </div>
         <div className=" relative">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">quantity</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.sku}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.description}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.quantity}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="relative">
-                      <button
-                        onClick={() => toggleDropdown(product.id)}
-                        className="text-gray-400 hover:text-gray-600"
-                        aria-label="More options"
-                      >
-                        <MoreVertical className="h-5 w-5 " />
-                      </button>
-                      {activeDropdown === product.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                          <div className="py-1">
-                            <button onClick={() => handleEdit(product)} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">More</button>
-                            <button onClick={()=> handleDelete(product)} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <Table
+          columns={columns}
+          data={filteredProducts}
+          actions={true}
+          onRowAction={handleRowAction}
+        />    
         </div>
       </div>
-      <EditProductModal 
-          show={showEditModal}
-          product={selectedProduct}
-          onClose={() => setShowEditModal(false)}
-          onSave={handleSave}
+
+      <FormModal
+        show={showEditModal}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+        title="Edit Product"
+        fields={productFields}
+        mode= "edit"
+        selectedData = {selectedProduct}
       />
+
+      <FormModal
+        show={showAddModal}
+        onClose={handleAddClose}
+        onSave={handleAddSave}
+        title="Add Product"
+        fields={productFields}
+        mode= "create"
+      />
+
       <DeleteConfirmationModal
           show={showDeletetModal}
           product={selectedProduct}
           onClose={() => setShowDeletetModal(false)}
           onConfirm={handleDeleteSave}
-      />
-      <CreateProductModal
-          show={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          onSave={handleAddSave}
-
       />
     </div>
 
