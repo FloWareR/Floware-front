@@ -19,7 +19,7 @@ const Customers = ({ customers, fetchCustomers, API_URL }) => {
   
     const pushUpdateToAPI = (formData) => {
     const URI = API_URL + '/updatecustomer';
-    fetch(`${URI}?id=${formData.id}`, {
+    fetch(`${URI}?id=${selectedCustomer.id}`, {
       method: 'PATCH',
       headers: {
           'Content-Type': 'application/json',
@@ -167,6 +167,7 @@ const Customers = ({ customers, fetchCustomers, API_URL }) => {
   const handleEdit = (customer) => {
     setSelectedCustomer(customer);
     setShowEditModal(true);
+    console.log(customer)
   };
 
   const handleEditSave = (formData) => {
@@ -194,7 +195,6 @@ const Customers = ({ customers, fetchCustomers, API_URL }) => {
   const handleRowAction = (row, actionType) => {
       if (actionType === 'edit') {
         handleEdit(row);
-        console.log('edit')
       } else if (actionType === 'delete') {
         handleDelete(row);
       } else if (actionType === 'delete') {
