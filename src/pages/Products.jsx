@@ -19,7 +19,7 @@ const navigate = useNavigate();
 //Fetch to API
   const pushUpdateToAPI = (formData) => {
   const URI = API_URL + '/updateproduct';
-  fetch(`${URI}?id=${formData.id}`, {
+  fetch(`${URI}?id=${selectedProduct.id}`, {
     method: 'PATCH',
     headers: {
         'Content-Type': 'application/json',
@@ -40,8 +40,7 @@ const navigate = useNavigate();
   .catch(error => {
     if(error.status === 401) {
       localStorage.removeItem('token')           
-      navigate('/login');              
-      ;}
+      navigate('/login');        
       toast.warning('Manager access required', {
         position: "top-right",
         autoClose: 4000,
@@ -50,7 +49,10 @@ const navigate = useNavigate();
         pauseOnHover: false,
         draggable: true,
         progress: undefined,
-      });
+      });      
+      ;}
+      console.log(error);
+
       }
   );
 
@@ -72,6 +74,7 @@ const navigate = useNavigate();
       return response.json();
     })
     .then(data => {
+      console.log('Delete successful:', data);
       toast.warning('Delete successful!', {
         position: "top-right",
         autoClose: 4000,
@@ -124,8 +127,7 @@ const navigate = useNavigate();
   .catch(error => {
     if(error.status === 401) {
       localStorage.removeItem('token')           
-      navigate('/login');              
-      ;}
+      navigate('/login');    
       toast.warning('Manager access required', {
         position: "top-right",
         autoClose: 4000,
@@ -134,7 +136,9 @@ const navigate = useNavigate();
         pauseOnHover: false,
         draggable: true,
         progress: undefined,
-      });
+      });          
+      ;}
+
   });
   }
 

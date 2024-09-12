@@ -28,12 +28,16 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
   const handleSave = () => {
     if (mode === 'create') {
       const newErrors = {};
+      const filteredData = {};
+
       fields.forEach(field => {
         if (field.required && !formData[field.name]) {
           newErrors[field.name] = true;
+        } else if (formData[field.name]) { 
+          filteredData[field.name] = formData[field.name];
         }
       });
-
+  
       if (Object.keys(newErrors).length > 0) {
         toast.error('Please fill in all required fields!', {
           position: "top-right",
@@ -43,27 +47,33 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
         return;
       }
     }
-
+  
     if (mode === 'edit') {
-
       // Edit mode logic, check for changes
-      const hasChanges = Object.keys(formData).some(
-        key => formData[key] !== initialData[key]
-      );
-
-      if (!hasChanges) {
+      const changes = Object.keys(formData).reduce((acc, key) => {
+        if (formData[key] !== initialData[key]) {
+          acc[key] = formData[key];
+        }
+        return acc;
+      }, {});
+  
+      if (Object.keys(changes).length === 0) {
         toast.error('No changes were made!', {
           position: "top-right",
           autoClose: 4000,
         });
         return;
       }
+  
+      onSave(changes); // Pass only the changes
+    } else {
+      onSave(formData); // For create mode, send the whole formData
     }
-
+  
     setErrors({});
-    onSave(formData);
     onClose();
   };
+  
 
   if (!show) return null;
 
