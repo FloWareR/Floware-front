@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Audio } from 'react-loader-spinner';
+import { useNavigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import SideBar from './SideBar';
 import Products from './Products';
-import { Audio } from 'react-loader-spinner';
-import { useNavigate } from 'react-router-dom';
 import MobileMessage from './MobileMessage';
 import Customers from './Customers';
+import Orders from './Orders';
 
 
 
@@ -13,6 +14,7 @@ export default function Component({ API_URL }) {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 768px)').matches);
   const navigate = useNavigate();
@@ -75,6 +77,35 @@ export default function Component({ API_URL }) {
     }
   };
 
+  const fetchOrders = async () => {
+    const URI = API_URL + '/getorder';
+    setLoading(true);
+    try {
+      const response = await fetch(URI, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+        throw new Error('Error while fetching');
+      }
+
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Fetch failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (products.length === 0) {
       fetchProducts();
@@ -86,6 +117,12 @@ export default function Component({ API_URL }) {
       fetchCustomers();
     }
   }, [customers.length]);
+
+  useEffect(() => {
+    if (orders.length === 0) {
+      fetchOrders();
+    }
+  }, [orders.length]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -113,9 +150,10 @@ export default function Component({ API_URL }) {
       case 'products':
         return <Products products={products} fetchProducts={fetchProducts} API_URL={API_URL} />;
       case 'orders':
-        return <Dashboard products={products} customers={customers}/>;
+        return <Orders orders={orders} fetchOrders={fetchOrders} API_URL={API_URL} />;
       case 'customers':
         return <Customers customers={customers} fetchCustomers={fetchCustomers} API_URL={API_URL} />;
+
       default:
         return <Dashboard products={products} />;
     }
