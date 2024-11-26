@@ -99,6 +99,7 @@ export default function Component({ API_URL }) {
 
       const data = await response.json();
       setOrders(data);
+      console.log(data)
     } catch (error) {
       console.error('Fetch failed:', error);
     } finally {
@@ -107,22 +108,19 @@ export default function Component({ API_URL }) {
   };
 
   useEffect(() => {
-    if (products.length === 0) {
-      fetchProducts();
-    }
-  }, [products.length]);
-
-  useEffect(() => {
-    if (customers.length === 0) {
-      fetchCustomers();
-    }
-  }, [customers.length]);
-
-  useEffect(() => {
-    if (orders.length === 0) {
-      fetchOrders();
-    }
-  }, [orders.length]);
+    const fetchData = async () => {
+      try {
+        await fetchProducts();
+        await fetchCustomers();
+        await fetchOrders();
+      } catch (error) {
+        console.error('Fetch failed:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
   useEffect(() => {
     const handleResize = () => {
@@ -150,7 +148,7 @@ export default function Component({ API_URL }) {
       case 'products':
         return <Products products={products} fetchProducts={fetchProducts} API_URL={API_URL} />;
       case 'orders':
-        return <Orders orders={orders} fetchOrders={fetchOrders} API_URL={API_URL} />;
+        return <Orders customers={customers} products={products} orders={orders} fetchOrders={fetchOrders} API_URL={API_URL} />;
       case 'customers':
         return <Customers customers={customers} fetchCustomers={fetchCustomers} API_URL={API_URL} />;
 
