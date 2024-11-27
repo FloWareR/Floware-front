@@ -6,7 +6,7 @@ const Dashboard = ({products, customers, orders}) => {
   const lowStockAlert = products.filter(product => product.quantity < 10).length;
 
   return (
-    <main className="flex-1 p-8">
+<div className="container mx-auto p-4 md:p-8 flex-1">
         <h1 className="text-3xl font-semibold text-gray-70 mb-6">Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {[
@@ -34,7 +34,7 @@ const Dashboard = ({products, customers, orders}) => {
           </div>
 
         </div>
-      </main>
+      </div>
   )
 }
 

@@ -16,7 +16,7 @@ export default function Component({ API_URL }) {
   const [customers, setCustomers] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 768px)').matches);
+  const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 379px)').matches);
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
@@ -124,7 +124,7 @@ export default function Component({ API_URL }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+      setIsMobile(window.matchMedia('(max-width: 379px)').matches);
     };
 
     window.addEventListener('resize', handleResize);
@@ -158,10 +158,14 @@ export default function Component({ API_URL }) {
   };
 
   return (
-    <div className={`flex h-screen w-screen ${isMobile ? 'overflow-hidden' : ''} bg-gray-200`}>
-      {isMobile && <MobileMessage />}
+<div className={`flex h-screen w-screen bg-gray-200`}>
+    <>
       <SideBar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {renderContent()}
-    </div>
+      <main className="flex-grow overflow-auto">
+        {renderContent()}
+      </main>
+    </>
+</div>
+
   );
 }
