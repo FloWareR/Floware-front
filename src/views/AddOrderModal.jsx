@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
   const [formData, setFormData] = useState({
     customer_id: '',
-    total_amount: 0, // This will be dynamically calculated
+    total_amount: 0,
     status: '',
-    order_data: [], // Changed field name to `order_data`
+    order_data: [],
   });
 
   const handleInputChange = (e) => {
@@ -25,7 +25,7 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
   const addOrderDataRow = () => {
     setFormData({
       ...formData,
-      order_data: [...formData.order_data, { product_id: '', quantity: 1 }], // Initialize with empty `product_id`
+      order_data: [...formData.order_data, { product_id: '', quantity: 1 }],
     });
   };
 
@@ -34,12 +34,10 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
     setFormData({ ...formData, order_data: updatedOrderData });
   };
 
-  // Calculate total amount dynamically whenever order_data changes
   useEffect(() => {
     const total = formData.order_data.reduce((sum, order) => {
       const productDetails = products.find((p) => p.product_id === order.id);
       const price = productDetails ? productDetails.price : 0;
-      console.log(order)
       return sum + price * (order.quantity || 0);
     }, 0);
     setFormData((prevData) => ({ ...prevData, total_amount: total }));
@@ -59,7 +57,7 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
       customer_id: '',
       total_amount: 0,
       status: '',
-      order_data: [], // Reset order_data after saving
+      order_data: [],
     });
   };
 
@@ -67,8 +65,8 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[600px]">
-        <h2 className="text-xl font-semibold mb-4">Add New Order</h2>
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full sm:w-[600px] max-h-screen overflow-y-auto">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">Add New Order</h2>
         <div className="mb-4">
           <label htmlFor="customer_id" className="block text-sm font-medium text-gray-700">
             Customer
@@ -123,20 +121,20 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
           </select>
         </div>
         <div className="mb-4">
-          <h3 className="text-lg font-medium mb-2">Products</h3>
+          <h3 className="text-base sm:text-lg font-medium mb-2">Products</h3>
           {formData.order_data.map((order, index) => (
-            <div key={index} className="flex items-center gap-4 mb-2">
+            <div key={index} className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2">
               <select
                 value={order.product_id}
                 onChange={(e) => handleOrderDataChange(index, 'product_id', e.target.value)}
-                className="block w-3/4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-2/3 sm:w-3/4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
                 <option value="" disabled>
                   Select a product
                 </option>
                 {products.map((prod) => (
                   <option key={prod.product_id} value={prod.id}>
-                    {prod.name} 
+                    {prod.name}
                   </option>
                 ))}
               </select>
@@ -145,7 +143,7 @@ const AddModal = ({ isVisible, onClose, onSave, customers, products }) => {
                 min="1"
                 value={order.quantity}
                 onChange={(e) => handleOrderDataChange(index, 'quantity', e.target.value)}
-                className="block w-1/4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-1/3 sm:w-1/4 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Qty"
               />
               <button

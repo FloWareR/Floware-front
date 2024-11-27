@@ -6,7 +6,7 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [initialData, setInitialData] = useState({});
-  
+
   useEffect(() => {
     if (mode === 'edit' && selectedData) {
       setFormData(selectedData);
@@ -30,7 +30,7 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
       const newErrors = {};
       const filteredData = {};
 
-      fields.forEach(field => {
+      fields.forEach((field) => {
         if (field.required && !formData[field.name]) {
           newErrors[field.name] = true;
         } else if (formData[field.name]) {
@@ -40,7 +40,7 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
 
       if (Object.keys(newErrors).length > 0) {
         toast.error('Please fill in all required fields!', {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 4000,
         });
         setErrors(newErrors);
@@ -49,7 +49,6 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
     }
 
     if (mode === 'edit') {
-      // Edit mode logic, check for changes
       const changes = Object.keys(formData).reduce((acc, key) => {
         if (formData[key] !== initialData[key]) {
           acc[key] = formData[key];
@@ -59,15 +58,15 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
 
       if (Object.keys(changes).length === 0) {
         toast.error('No changes were made!', {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 4000,
         });
         return;
       }
 
-      onSave(changes); // Pass only the changes
+      onSave(changes);
     } else {
-      onSave(formData); // For create mode, send the whole formData
+      onSave(formData);
     }
 
     setErrors({});
@@ -77,14 +76,14 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-        <h2 className="text-xl font-semibold mb-4">{title}</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg max-h-screen overflow-y-auto">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">{title}</h2>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           {fields.map((field, index) => (
             <div key={index}>
-              <label className="block mb-2">{field.label}</label>
+              <label className="block mb-2 text-sm font-medium">{field.label}</label>
               {field.options ? (
                 <select
                   value={formData[field.name] || ''}
@@ -124,12 +123,20 @@ const DynamicModal = ({ show, onClose, onSave, title, fields, mode, selectedData
           ))}
         </div>
 
-        <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 mr-2 rounded">
-          {mode === 'create' ? 'Create' : 'Save'}
-        </button>
-        <button onClick={onClose} className="bg-red-600 text-white px-5 py-2 rounded">
-          Close
-        </button>
+        <div className="flex justify-end space-x-2 mt-4">
+          <button
+            onClick={onClose}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded font-semibold"
+          >
+            Close
+          </button>
+          <button
+            onClick={handleSave}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold"
+          >
+            {mode === 'create' ? 'Create' : 'Save'}
+          </button>
+        </div>
       </div>
     </div>
   );
