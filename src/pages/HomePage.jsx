@@ -144,7 +144,7 @@ export default function Component({ API_URL }) {
 
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard products={products} customers={customers}/>;
+        return <Dashboard products={products} customers={customers} orders={orders}/>;
       case 'products':
         return <Products products={products} fetchProducts={fetchProducts} API_URL={API_URL} />;
       case 'orders':

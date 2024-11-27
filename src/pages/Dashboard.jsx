@@ -1,7 +1,7 @@
 import { Package, DollarSign, ShoppingCart, Users, Boxes, AlertTriangle, TrendingUp } from 'lucide-react'
 
 
-const Dashboard = ({products, customers}) => {
+const Dashboard = ({products, customers, orders}) => {
 
   const lowStockAlert = products.filter(product => product.quantity < 10).length;
 
@@ -11,7 +11,7 @@ const Dashboard = ({products, customers}) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
           {[
             { title: 'Total Products', value: products.length, icon: Boxes, color: 'text-blue-500' },
-            { title: 'Total Orders', value: '0', icon: ShoppingCart, color: 'text-green-500' },
+            { title: 'Total Orders', value: orders.length, icon: ShoppingCart, color: 'text-green-500' },
             { title: 'Revenue', value: '0', icon: DollarSign, color: 'text-yellow-500' },
             { title: 'Customers', value: customers.length, icon: Users, color: 'text-purple-500' },
           ].map((item, index) => (
@@ -32,13 +32,7 @@ const Dashboard = ({products, customers}) => {
               <span>{lowStockAlert} products are running low on stock</span>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Top Selling Products</h2>
-            <div className="flex items-center text-green-500">
-              <TrendingUp className="h-5 w-5 mr-2" />
-              <span>View this month's best sellers</span>
-            </div>
-          </div>
+
         </div>
       </main>
   )
