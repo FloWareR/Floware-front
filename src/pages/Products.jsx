@@ -39,6 +39,7 @@ const Products = ({ products, fetchProducts, API_URL }) => {
 
   const pushDeleteToAPI = () => {
     const URI = `${API_URL}/deleteproduct?id=${selectedProduct.id}`;
+    
     fetch(URI, {
       method: 'DELETE',
       headers: {
@@ -46,17 +47,22 @@ const Products = ({ products, fetchProducts, API_URL }) => {
         token: localStorage.getItem('token'),
       },
     })
-      .then((response) => {
-        if (!response.ok) throw new Error('Error deleting');
-        return response.json();
-      })
-      .then(() => {
-        toast.warning('Product deleted successfully!', { position: 'top-right' });
-        fetchProducts();
-        setShowDeleteModal(false);
+      .then((response) => response.json())  
+      .then((data) => {
+        if (data.status === 'error') {
+          toast.warning(data.message, { position: 'top-right' });
+        } else if (data.status === 'success') {
+          toast.success('Product deleted successfully!', { position: 'top-right' });
+          fetchProducts();  
+          setShowDeleteModal(false);  
+        } else {
+          // Handle unexpected status or errors
+          toast.error('Unexpected error occurred!', { position: 'top-right' });
+        }
       })
       .catch(handleError);
   };
+  
 
   const pushAddToAPI = (newProduct) => {
     fetch(`${API_URL}/addproduct`, {
