@@ -101,6 +101,8 @@ const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
         </div>
       </div>
 
+      <AddModal API_URL={API_URL} customers={customers} products={products} fetchOrders={fetchOrders} />
+
       {/* View Details Modal */}
       {showDetailsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
