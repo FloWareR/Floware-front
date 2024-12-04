@@ -14,7 +14,7 @@ const Dashboard = ({products, customers, orders}) => {
     {[
       { title: 'Total Products', value: products.length, icon: Boxes, color: 'text-blue-500' },
       { title: 'Total Orders', value: orders.length, icon: ShoppingCart, color: 'text-green-500' },
-      { title: 'Revenue', value: '0', icon: DollarSign, color: 'text-yellow-500' },
+      /*{ title: 'Revenue', value: '0', icon: DollarSign, color: 'text-yellow-500' }, */
       { title: 'Customers', value: customers.length, icon: Users, color: 'text-purple-500' },
     ].map((item, index) => (
       <div

@@ -1,7 +1,13 @@
 import { MoreVertical } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-
-const Table = ({ columns, data, actions, onRowAction, isLoading }) => {
+const Table = ({ 
+  columns, 
+  data, 
+  actions, 
+  onRowAction, 
+  isLoading, 
+  customActionRenderer 
+}) => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dropdownRef = useRef(null);
 
@@ -71,26 +77,32 @@ const Table = ({ columns, data, actions, onRowAction, isLoading }) => {
                           role="menu"
                         >
                           <div className="py-1">
-                            <button
-                              className="block w-full text-left px-4 py-2 text-yellow-600 hover:bg-yellow-100"
-                              role="menuitem"
-                              onClick={() => {
-                                onRowAction(row, 'edit');
-                                setActiveDropdown(null);
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100"
-                              role="menuitem"
-                              onClick={() => {
-                                onRowAction(row, 'delete');
-                                setActiveDropdown(null);
-                              }}
-                            >
-                              Delete
-                            </button>
+                            {customActionRenderer 
+                              ? customActionRenderer(row, () => setActiveDropdown(null)) 
+                              : (
+                                <>
+                                  <button
+                                    className="block w-full text-left px-4 py-2 text-yellow-600 hover:bg-yellow-100"
+                                    role="menuitem"
+                                    onClick={() => {
+                                      onRowAction(row, 'edit');
+                                      setActiveDropdown(null);
+                                    }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100"
+                                    role="menuitem"
+                                    onClick={() => {
+                                      onRowAction(row, 'delete');
+                                      setActiveDropdown(null);
+                                    }}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              )}
                           </div>
                         </div>
                       )}

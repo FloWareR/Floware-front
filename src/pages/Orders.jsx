@@ -5,269 +5,106 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Table from '../components/Table';
 import AddModal from '../views/AddOrderModal';
+import OrderDetails from '../pages/OrderDetails';
 
 const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+
   const navigate = useNavigate();
-  
-  const pushUpdateToAPI = (formData) => {
-    const URI = API_URL + '/updateorder';
-    fetch(`${URI}?id=${selectedOrder.id}`, {
-      method: 'PATCH',
-      headers: {
-          'Content-Type': 'application/json',
-          'token': localStorage.getItem('token'),
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Error updating');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Update successful:', data);
-      fetchOrders();
-    })
-    .catch(error => {
-      if(error.status === 401) {
-        localStorage.removeItem('token')           
-        navigate('/login');              
-      }
-      toast.warning('Manager access required', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-      });
-    });
-  };
-  
-  const pushDeleteToAPI = (selectedOrder) => {
-    const URI = API_URL + '/deleteorder';
-    fetch(`${URI}?id=${selectedOrder.id}`, {
-      method: 'DELETE',
-      headers: {
-          'Content-Type': 'application/json',
-          'token': localStorage.getItem('token'),
-      },
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Error updating');
-      }
-      return response.json();
-    })
-    .then(data => {
-      toast.warning('Delete successful!', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-      });
-      fetchOrders();
-    })
-    .catch(error => {
-      if(error.status === 401) {
-        localStorage.removeItem('token')           
-        navigate('/login');              
-      }
-      toast.warning('Manager access required', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-      });
-    });
-  };
-  
-  const pushAddToAPI = (formData) => {
-    console.log(formData)
-    const URI = API_URL + '/addorder';
-    fetch(URI, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'token': localStorage.getItem('token'),
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (!response.ok) {
-          throw new Error('Error adding');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('add successful:', data);
-      fetchOrders();
-    })
-    .catch(error => {
-      if(error.status === 401) {
-        localStorage.removeItem('token')           
-        navigate('/login');              
-      }
-      toast.warning('Manager access required', {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-      });
-    });
-  };
 
-  const enrichedOrders = orders.map(order => {
-    const customer = customers.find(cust => cust.id === order.customer_id);
-
-    console.log(customer)
+  const enrichedOrders = orders.map((order) => {
+    const customer = customers.find((cust) => cust.id === order.customer_id);
     return {
       ...order,
       customer_name: customer ? customer.email : 'Unknown Customer',
     };
   });
 
-  const filteredOrders = enrichedOrders.filter(order =>
+  const filteredOrders = enrichedOrders.filter((order) =>
     order.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.trim())
+    setSearchTerm(e.target.value.trim());
   };
 
-  const handleSave = (editedOrder) => {
-    pushUpdateToAPI(selectedOrder, editedOrder);
-  };
-
-  // Delete order
-  const handleDelete = (order) => {
+  // Handle View Details
+  const handleViewDetails = (order) => {
     setSelectedOrder(order);
-    setShowDeleteModal(true);
+    setShowDetailsModal(true);
   };
 
-  const handleDeleteSave = () => {
-    pushDeleteToAPI(selectedOrder);
+  const handleDetailsClose = () => {
+    setShowDetailsModal(false);
   };
 
-  // Edit order
-  const handleEdit = (order) => {
-    setSelectedOrder(order);
-    setShowEditModal(true);
-    console.log(order);
-  };
-
-  const handleEditSave = (formData) => {
-    pushUpdateToAPI(formData);
-  };
-
-  const handleEditClose = () => {
-    setShowEditModal(false);
-  };
-
-  // Add order
-  const handleAdd = () => {
-    setShowAddModal(true);
-  };
-
-  const handleAddSave = (formData) => {
-    pushAddToAPI(formData);
-  };
-
-  const handleAddClose = () => {
-    setShowAddModal(false);
-  };
-
-  // Misc functions
-  const handleRowAction = (row, actionType) => {
-    if (actionType === 'edit') {
-      handleEdit(row);
-    } else if (actionType === 'delete') {
-      handleDelete(row);
-    }
-  };
+  const renderOrderActions = (row, closeDropdown) => (
+    <button
+      className="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-100"
+      onClick={() => {
+        handleViewDetails(row);
+        closeDropdown();
+      }}
+    >
+      View Details
+    </button>
+  );
 
   const columns = [
-    { Header: 'Ordered by', accessor: 'customer_name' }, 
+    { Header: 'Ordered by', accessor: 'customer_name' },
     { Header: 'Total', accessor: 'total_amount' },
     { Header: 'Status', accessor: 'status' },
     { Header: 'Ordered at', accessor: 'order_date' },
   ];
 
-  const orderFields = [
-    { name: 'customer_id', label: 'Customer', options: customers, required: true }, 
-    { name: 'product_id', label: 'Product', required: true },
-    { name: 'total_amount', label: 'Total', required: true },
-    { name: 'status', label: 'Status', required: true },
-    { name: 'order_date', label: 'Ordered at', required: true },
-  ];
-
   return (
-<div className="container mx-auto p-4 md:p-8 flex-1">
-<div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-    <h1 className="text-2xl md:text-3xl font-semibold text-gray-700">Orders</h1>
-    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-      <button
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-        onClick={fetchOrders}
-      >
-        <RotateCcw className="mr-2 h-4 w-4" />
-        Refresh Orders
-      </button>
-      <button
-        onClick={() => handleAdd()}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-      >
-        <Plus className="mr-2 h-4 w-4" />
-        Add Orders
-      </button>
-    </div>
-  </div>
-      <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4 sm:gap-6 mb-4">
-      <div className="relative w-full sm:w-auto">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search customers"
-          className="w-full sm:w-64 pl-10 pr-4 py-2 border-gray-300 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
+    <div className="container mx-auto p-4 md:p-8 flex-1">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-700">Orders</h1>
+        <button
+          onClick={fetchOrders}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Refresh Orders
+        </button>
       </div>
-    </div>
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search customers"
+            className="w-full sm:w-64 pl-10 pr-4 py-2 border-gray-300 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
         <div className="relative">
           <Table
             columns={columns}
             data={filteredOrders}
-            actions={true}
-            onRowAction={handleRowAction}
+            actions
+            customActionRenderer={renderOrderActions}
           />
         </div>
       </div>
-      <AddModal
-        isVisible={showAddModal}
-        onClose={handleAddClose}
-        onSave={handleAddSave}
-        customers={customers}
-        products={products}
-      />
+
+      {/* View Details Modal */}
+      {showDetailsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Order Details</h2>
+            {selectedOrder ? (
+              <OrderDetails orderId={selectedOrder.id} onClose={handleDetailsClose} API_URL = {API_URL} />
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
