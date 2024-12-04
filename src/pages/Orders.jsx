@@ -10,10 +10,49 @@ import OrderDetails from '../pages/OrderDetails';
 const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const navigate = useNavigate();
 
+  const pushAddToAPI = (formData) => {
+    console.log(formData)
+    const URI = API_URL + '/addorder';
+    fetch(URI, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'token': localStorage.getItem('token'),
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (!response.ok) {
+          throw new Error('Error adding');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('add successful:', data);
+      fetchOrders();
+    })
+    .catch(error => {
+      if(error.status === 401) {
+        localStorage.removeItem('token')           
+        navigate('/login');              
+      }
+      toast.warning('Manager access required', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+    });
+  };
+  
   const enrichedOrders = orders.map((order) => {
     const customer = customers.find((cust) => cust.id === order.customer_id);
     return {
@@ -40,6 +79,17 @@ const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
     setShowDetailsModal(false);
   };
 
+  const handleAdd = () => {
+    setShowAddModal(true);
+  };
+
+  const handleAddSave = (formData) => {
+    pushAddToAPI(formData);
+  };
+
+  const handleAddClose = () => {
+    setShowAddModal(false);
+  };
   const renderOrderActions = (row, closeDropdown) => (
     <button
       className="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-100"
@@ -101,7 +151,13 @@ const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
         </div>
       </div>
 
-      <AddModal API_URL={API_URL} customers={customers} products={products} fetchOrders={fetchOrders} />
+      <AddModal
+            isVisible={showAddModal}
+            onClose={handleAddClose}
+            onSave={handleAddSave}
+            customers={customers}
+            products={products}
+      />
 
       {/* View Details Modal */}
       {showDetailsModal && (
