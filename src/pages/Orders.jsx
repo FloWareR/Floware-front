@@ -62,14 +62,23 @@ const Orders = ({ orders, fetchOrders, API_URL, customers, products }) => {
   return (
     <div className="container mx-auto p-4 md:p-8 flex-1">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-        <h1 className="text-2xl md:text-3xl font-semibold text-gray-700">Orders</h1>
-        <button
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-700">Orders</h1>
+          <button
           onClick={fetchOrders}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
         >
           <RotateCcw className="mr-2 h-4 w-4" />
           Refresh Orders
         </button>
+        <button
+          onClick={() => handleAdd()}       
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"    
+        >
+          <Plus className="mr-2 h-4 w-4" />       
+          Add Orders      
+        </button>
+      </div>
       </div>
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="relative mb-4">
